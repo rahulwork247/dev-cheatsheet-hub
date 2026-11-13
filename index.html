@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevHub // High-Performance Developer Cheatsheets</title>
+    <meta name="description" content="Zero-fluff, interactive, high-utility cheatsheets for Linux Systemd, Docker, Python 3.12+, and Git.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0c0d12;
+            --card: #151722;
+            --card-border: #232738;
+            --crimson: #ff2a5f;
+            --crimson-glow: rgba(255, 42, 95, 0.25);
+            --crimson-subtle: #3a1522;
+            --text-main: #f0f2f8;
+            --text-muted: #8a91a8;
+            --code-bg: #090a0e;
+            --font-code: 'JetBrains Mono', monospace;
+            --font-ui: 'Inter', sans-serif;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: var(--font-ui);
+            line-height: 1.5;
+            padding: 24px;
+        }
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto 32px auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--card-border);
+        }
+        .brand-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .brand-title span { color: var(--crimson); }
+        .brand-tagline {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        .sponsor-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #ff2a5f 0%, #b8143d 100%);
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 10px 18px;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px var(--crimson-glow);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .sponsor-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 42, 95, 0.4);
+        }
+        .search-section {
+            max-width: 1200px;
+            margin: 0 auto 28px auto;
+        }
+        .search-box {
+            width: 100%;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            padding: 14px 20px;
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 1rem;
+            font-family: var(--font-ui);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .search-box:focus {
+            border-color: var(--crimson);
+            box-shadow: 0 0 0 3px var(--crimson-glow);
+        }
+        .category-filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+        .filter-btn {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            color: #fff;
+            border-color: var(--crimson);
+            background: var(--crimson-subtle);
+        }
+        .grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: border-color 0.2s;
+        }
+        .card:hover {
+            border-color: #3b425b;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .card-category {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--crimson);
+        }
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .card-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+        }
+        .code-container {
+            position: relative;
+            background: var(--code-bg);
+            border: 1px solid #1c1f2e;
+            border-radius: 8px;
+            padding: 12px 14px;
+        }
+        pre {
+            font-family: var(--font-code);
+            font-size: 0.85rem;
+            color: #d1d5db;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #252a3d;
+            border: none;
+            color: #9da6c2;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+        .copy-btn:hover { background: var(--crimson); color: #fff; }
+        footer {
+            max-width: 1200px;
+            margin: 48px auto 0 auto;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding-top: 24px;
+            border-top: 1px solid var(--card-border);
+        }
+        footer a { color: var(--crimson); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <div>
+            <div class="brand-title">DEV<span>HUB</span> // CHEATSHEETS</div>
+            <div class="brand-tagline">High-utility, copy-paste developer cheat sheets & production command recipes</div>
+        </div>
+        <div>
+            <a class="sponsor-btn" href="https://buymeacoffee.com/rahulwork247" target="_blank" rel="noopener">
+                ☕ Support via Buy Me a Coffee
+            </a>
+        </div>
+    </div>
+
+    <div class="search-section">
+        <input type="text" id="search" class="search-box" placeholder="Type to search commands, flags, tools (e.g. systemd, docker prune, asyncio, git stash)..." autocomplete="off">
+        <div class="category-filters" id="filters">
+            <button class="filter-btn active" data-cat="all">All Categories</button>
+            <button class="filter-btn" data-cat="systemd">Systemd / Linux</button>
+            <button class="filter-btn" data-cat="docker">Docker & Compose</button>
+            <button class="filter-btn" data-cat="python">Python 3.12+ Async</button>
+            <button class="filter-btn" data-cat="git">Git Power Ops</button>
+        </div>
+    </div>
+
+    <div class="grid" id="cheatsheet-grid"></div>
+
+    <footer>
+        <p>Curated and autonomously updated by <a href="https://github.com/rahulwork247" target="_blank">rahulwork247</a>. Powered by 100% Free Open Source & GitHub Pages.</p>
+    </footer>
+
+    <script>
+        const items = [
+            {
+                category: "systemd",
+                catLabel: "Systemd / Linux",
+                title: "Create and Reload Custom Systemd Service",
+                desc: "Write unit file to /etc/systemd/system/ and reload daemon without rebooting.",
+                code: "sudo systemctl daemon-reload
+sudo systemctl enable --now myservice.service
+journalctl -u myservice -f -n 50"
+            },
+            {
+                category: "systemd",
+                catLabel: "Systemd / Linux",
+                title: "Identify Failing Units and Boot Bottlenecks",
+                desc: "Quickly diagnose services failing on boot or causing long system startup times.",
+                code: "systemctl --failed
+systemd-analyze blame | head -n 15"
+            },
+            {
+                category: "docker",
+                catLabel: "Docker & Compose",
+                title: "Full System Deep Prune",
+                desc: "Reclaim all unreferenced images, dangling layers, networks, and build caches.",
+                code: "docker system prune -a --volumes -f"
+            },
+            {
+                category: "docker",
+                catLabel: "Docker & Compose",
+                title: "Hot Reload Single Compose Service",
+                desc: "Rebuild and recreate only one service in a multi-container stack without downtime to peers.",
+                code: "docker compose up -d --no-deps --build <service_name>"
+            },
+            {
+                category: "python",
+                catLabel: "Python 3.12+ Async",
+                title: "Structured Concurrency with TaskGroup",
+                desc: "Robust async execution with automatic cleanup and ExceptionGroup handling in Python 3.11+.",
+                code: "import asyncio
+
+async def fetch_all(urls):
+    async with asyncio.TaskGroup() as tg:
+        tasks = [tg.create_task(fetch(u)) for u in urls]
+    return [t.result() for t in tasks]"
+            },
+            {
+                category: "python",
+                catLabel: "Python 3.12+ Async",
+                title: "Zero-Copy Socket Streaming via memoryview",
+                desc: "High-throughput binary protocol streaming minimizing garbage collector allocations.",
+                code: "buf = bytearray(65536)
+view = memoryview(buf)
+nbytes = sock.recv_into(view)
+process_chunk(view[:nbytes])"
+            },
+            {
+                category: "git",
+                catLabel: "Git Power Ops",
+                title: "Selective Interactive Rebase & Autosquash",
+                desc: "Keep commit history immaculate before submitting pull requests without manual editing.",
+                code: "git commit --fixup <commit_hash>
+git rebase -i --autosquash <base_branch>"
+            },
+            {
+                category: "git",
+                catLabel: "Git Power Ops",
+                title: "Locate Deleted File History via Log",
+                desc: "Find the commit that removed a file and restore it effortlessly.",
+                code: "git log --full-history -- <filepath>
+git checkout <commit_hash>~1 -- <filepath>"
+            }
+        ];
+
+        const grid = document.getElementById('cheatsheet-grid');
+        const searchInput = document.getElementById('search');
+        let currentCat = 'all';
+
+        function render(filterText = '', cat = 'all') {
+            grid.innerHTML = '';
+            const lower = filterText.toLowerCase();
+            const filtered = items.filter(i => {
+                const matchCat = (cat === 'all' || i.category === cat);
+                const matchSearch = (!filterText || 
+                    i.title.toLowerCase().includes(lower) || 
+                    i.desc.toLowerCase().includes(lower) || 
+                    i.code.toLowerCase().includes(lower) || 
+                    i.catLabel.toLowerCase().includes(lower));
+                return matchCat && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">No cheatsheets match your query. Try another keyword!</div>';
+                return;
+            }
+
+            filtered.forEach((item, idx) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div>
+                        <div class="card-header">
+                            <span class="card-category">${item.catLabel}</span>
+                        </div>
+                        <div class="card-title">${item.title}</div>
+                        <div class="card-desc">${item.desc}</div>
+                    </div>
+                    <div class="code-container">
+                        <button class="copy-btn" onclick="copyCode(this, ${idx})">Copy</button>
+                        <pre><code>${item.code}</code></pre>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        window.copyCode = function(btn, idx) {
+            const targetItem = items[idx];
+            navigator.clipboard.writeText(targetItem.code).then(() => {
+                const orig = btn.innerText;
+                btn.innerText = 'Copied!';
+                setTimeout(() => btn.innerText = orig, 1800);
+            });
+        };
+
+        searchInput.addEventListener('input', (e) => {
+            render(e.target.value, currentCat);
+        });
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentCat = e.target.getAttribute('data-cat');
+                render(searchInput.value, currentCat);
+            });
+        });
+
+        render();
+    </script>
+</body>
+</html>
